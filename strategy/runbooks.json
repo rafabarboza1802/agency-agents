@@ -170,6 +170,59 @@
           ]
         }
       ]
+    },
+    {
+      "slug": "best-construction",
+      "title": "Best Construction Inc. — Construction Company Operations",
+      "mode": "NEXUS-Micro",
+      "duration": "Ongoing (daily, weekly and per-project loops)",
+      "summary": "Run a California general contractor with three lead engines (commercial/public, residential, property management/HOA), estimating, proposals, project delivery, safety and job costing — every external action gated on the owner's approval.",
+      "doc": "strategy/runbooks/scenario-best-construction.md",
+      "roster": [
+        {
+          "group": "Command",
+          "activation": "always",
+          "agents": [
+            "construction-chief-of-staff"
+          ]
+        },
+        {
+          "group": "Lead Engines",
+          "activation": "daily lead loop",
+          "agents": [
+            "construction-lead-intelligence-scout",
+            "construction-public-bid-hunter",
+            "construction-residential-homeowner-lead-hunter",
+            "construction-property-management-hoa-lead-hunter"
+          ]
+        },
+        {
+          "group": "Sales & Preconstruction",
+          "activation": "always",
+          "agents": [
+            "construction-pipeline-account-manager",
+            "construction-commercial-outreach-rep",
+            "construction-estimator",
+            "construction-proposal-bid-writer"
+          ]
+        },
+        {
+          "group": "Delivery & Finance",
+          "activation": "active projects",
+          "agents": [
+            "construction-project-manager",
+            "construction-safety-calosha-advisor",
+            "construction-finance-job-costing"
+          ]
+        },
+        {
+          "group": "Growth",
+          "activation": "as needed",
+          "agents": [
+            "construction-local-marketing-lead"
+          ]
+        }
+      ]
     }
   ]
 }
