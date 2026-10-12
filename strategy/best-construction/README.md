@@ -107,6 +107,8 @@ Without a connector, the agents produce the same work as text and files for you 
 
 If the `best-construction-segments` and `bid-estimator` skills are installed, the agents defer to them: segment pitches and pricing tiers come from the first, and the estimating method from the second. Keep the `segments` mapping in `company-profile.yaml` consistent with the segments skill.
 
+`skills/best-construction-segments.zip` is the current version of the segments skill, matching this config's three lead engines and segment mapping. To update the skill in your claude.ai account, upload that zip under Settings → Capabilities → Skills, replacing the old `best-construction-segments`. When you change `segments` or `lead_engines` in the profile, update the skill the same way.
+
 ## Staying in sync with upstream
 
 The Best Construction team is additive. It adds a new division, docs under `strategy/best-construction/`, one runbook, and one-line registrations in the files the division checker enforces (`divisions.json`, `scripts/convert.sh`, `scripts/lint-agents.sh`, `.github/workflows/lint-agents.yml`, `scripts/install.sh`). It also refreshes `scripts/convert-outputs.sha256`. No upstream agent was changed. To pull upstream updates:
