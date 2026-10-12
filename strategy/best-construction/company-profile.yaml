@@ -1,0 +1,275 @@
+# Best Construction Inc. — company configuration
+#
+# Single source of truth for every agent in the construction/ division.
+# Agents READ this file; they never hard-code licences, limits, crews or
+# qualifications. Update facts here, not in the agent prompts.
+#
+# Lookup order used by every BC agent:
+#   1. $BC_COMPANY_PROFILE (absolute path), if set
+#   2. ./strategy/best-construction/company-profile.yaml (agents run inside this repo)
+#   3. ~/.claude/best-construction/company-profile.yaml (agents installed globally)
+# If none is readable, the agent stops and asks for the missing facts.
+#
+# Conventions:
+#   - A value of null or "TBD" means UNKNOWN. Agents must treat unknown values as
+#     a blocker for any decision that depends on them (e.g. bonding limit unknown
+#     => no go/no-go on a bonded public bid) and list them as open questions.
+#   - "verified_on" dates let agents warn when a fact is stale (> 365 days, or
+#     past an expiry date).
+#   - Never put passwords, API keys, bank details or SSNs in this file.
+
+schema_version: 1
+last_reviewed: 2026-10-12
+
+company:
+  legal_name: Best Construction Inc.
+  dba: Best Construction
+  entity_type: California corporation        # VERIFY
+  website: https://bestconstruction.pro
+  email: info@bestconstruction.pro
+  phone: TBD
+  hq:
+    city: Pinole
+    state: CA
+    address: TBD
+  years_in_business: 19
+  accreditations:
+    - name: BBB Accredited Business
+      verified_on: TBD
+  signatory:
+    name: Rafa
+    title: TBD
+    email_signature: "Rafa, Best Construction — bestconstruction.pro"
+
+licensing:
+  cslb_license_number: TBD
+  cslb_status_verified_on: TBD            # check https://www.cslb.ca.gov before every bid
+  classifications:
+    # Class B = General Building Contractor. Add specialty classes (e.g. A, C-8,
+    # C-12, C-21, C-27) only once confirmed on the CSLB record.
+    - code: B
+      description: General Building Contractor
+      status: TBD                          # active | inactive | TBD
+      expires: TBD
+  dir_registration:                        # CA Dept. of Industrial Relations — required for public works
+    number: TBD
+    expires: TBD
+  sam_gov:
+    uei: TBD
+    cage_code: TBD
+    registration_expires: TBD
+  cal_eprocure:
+    supplier_id: TBD
+    sb_dvbe_certifications: []             # e.g. [SB, SB-PW, DVBE] once certified
+  other_certifications: []                 # e.g. DBE, LSBE, local-hire, union signatory status
+  business_licenses: []                    # city business licences: [{city, number, expires}]
+
+insurance:
+  general_liability:
+    each_occurrence: TBD
+    aggregate: TBD
+    carrier: TBD
+    expires: TBD
+  auto_liability:
+    combined_single_limit: TBD
+    expires: TBD
+  workers_comp:
+    status: TBD                            # policy | exempt — public works REQUIRES a policy
+    employers_liability_limit: TBD
+    expires: TBD
+  umbrella_excess:
+    limit: TBD
+    expires: TBD
+  pollution_liability: TBD                 # often required for demolition/abatement scopes
+  additional_insured_endorsements: TBD     # can we name owners/GCs as AI, primary & non-contributory, waiver of subrogation?
+
+bonding:
+  surety: TBD
+  agent_contact: TBD
+  single_project_limit: TBD
+  aggregate_limit: TBD
+  current_backlog_bonded: TBD
+  bid_bond_turnaround_days: TBD
+
+service_area:
+  base: Pinole, CA
+  radius_miles: 100
+  priority_counties:
+    - Contra Costa
+    - Alameda
+    - Solano
+    - Marin
+    - San Francisco
+    - San Mateo
+    - Santa Clara
+    - Napa
+    - Sonoma
+  willing_to_travel_beyond_radius: case-by-case
+
+services:
+  # Service catalogue. Agents may only pitch ids listed here AND mapped to the
+  # segment below. `self_performed` false = we sub it out or refer it.
+  # `public_works_ready` = we would bid it to a public agency today.
+  # Confirm each scope fits the CSLB classifications in `licensing`.
+  - {id: demolition,             label: "Demolition (structures, interiors, flatwork)",      self_performed: true, public_works_ready: TBD}
+  - {id: excavation,             label: "Excavation",                                         self_performed: true, public_works_ready: TBD}
+  - {id: grading,                label: "Grading and site preparation",                       self_performed: true, public_works_ready: TBD}
+  - {id: land_clearing,          label: "Land clearing",                                      self_performed: true, public_works_ready: TBD}
+  - {id: concrete,               label: "Concrete flatwork, repair and replacement",          self_performed: true, public_works_ready: TBD}
+  - {id: driveways,              label: "Driveways",                                          self_performed: true, public_works_ready: TBD}
+  - {id: sidewalks_walkways,     label: "Sidewalks, walkways and trip-hazard repair",         self_performed: true, public_works_ready: TBD}
+  - {id: ada_exterior,           label: "ADA-related exterior improvements (ramps, paths)",   self_performed: true, public_works_ready: TBD}
+  - {id: paving,                 label: "Asphalt / parking-lot paving",                       self_performed: TBD,  public_works_ready: TBD}
+  - {id: pavers,                 label: "Pavers (patio, pool deck, commercial)",              self_performed: true, public_works_ready: TBD}
+  - {id: patios_hardscape,       label: "Patios, courtyards and hardscape",                   self_performed: true, public_works_ready: TBD}
+  - {id: retaining_walls,        label: "Retaining walls",                                    self_performed: true, public_works_ready: TBD}
+  - {id: drainage,               label: "Drainage",                                           self_performed: true, public_works_ready: TBD}
+  - {id: adu_site_prep,          label: "ADU site preparation",                               self_performed: true, public_works_ready: false}
+  - {id: fences_exterior,        label: "Fences and exterior improvements",                   self_performed: TBD,  public_works_ready: TBD}
+  - {id: build_remodel,          label: "Build, remodel, unit and common-area renovation",    self_performed: true, public_works_ready: TBD}
+  - {id: exterior_renovation,    label: "Building exterior renovation",                       self_performed: TBD,  public_works_ready: TBD}
+  - {id: emergency_repairs,      label: "Emergency construction repairs",                     self_performed: true, public_works_ready: false}
+  - {id: outdoor_living_residential, label: "Outdoor living projects for homeowners",   self_performed: true, public_works_ready: false}
+  - {id: outdoor_living_program, label: "Outdoor Living Partner Program (home builders only)", self_performed: true, public_works_ready: false}
+
+segments:
+  # Which services each segment may be pitched. The `best-construction-segments`
+  # skill, when installed, is the authority on pitch angle and pricing tiers;
+  # keep this mapping consistent with it.
+  # --- Engine 1: Commercial / Public ---
+  home_builders:        [outdoor_living_program]
+  general_contractors:  [driveways, pavers, demolition, excavation]
+  developers:           [demolition, patios_hardscape, pavers]
+  commercial_property:  [paving, concrete, sidewalks_walkways, ada_exterior, demolition, excavation]
+  public_agencies:      [demolition, excavation, grading, concrete, sidewalks_walkways, ada_exterior, paving, pavers, build_remodel]
+  utilities_infrastructure: [excavation, grading, concrete, demolition]
+  # --- Engine 2: Residential ---
+  residential_homeowners: [concrete, driveways, pavers, patios_hardscape, retaining_walls, excavation, grading,
+                           demolition, land_clearing, drainage, adu_site_prep, build_remodel, outdoor_living_residential]
+  # --- Engine 3: Property Management / HOA / Multifamily ---
+  property_managers_hoas_multifamily: [concrete, sidewalks_walkways, ada_exterior, paving, pavers, retaining_walls,
+                                       drainage, grading, excavation, demolition, land_clearing, patios_hardscape,
+                                       fences_exterior, exterior_renovation, build_remodel, emergency_repairs]
+
+lead_engines:
+  commercial_public:
+    segments: [home_builders, general_contractors, developers, commercial_property, public_agencies, utilities_infrastructure]
+    agents: [construction-lead-intelligence-scout, construction-public-bid-hunter]
+  residential:
+    segments: [residential_homeowners]
+    agents: [construction-residential-homeowner-lead-hunter]
+    score_bands: {hot: 80, warm: 60, nurture: 40}
+  property_management_hoa_multifamily:
+    segments: [property_managers_hoas_multifamily]
+    agents: [construction-property-management-hoa-lead-hunter]
+    score_bands: {hot: 80, warm: 60, nurture: 40}
+
+residential_lead_policy:
+  lead_platforms: []                       # only platforms we have accounts with, e.g. [{name: TBD, account: TBD}]
+  allowed_first_touch_for_permit_leads: [mail_letter, door_hanger]
+  cold_calls_allowed: false                # set true only after DNC process is in place
+  cold_sms_allowed: false                  # requires prior express written consent
+  suppression_list: TBD                    # where opt-outs / do-not-contact are kept
+  mailing_return_address: TBD
+
+capacity:
+  crews: []                                # e.g. [{name: Demo crew 1, size: 4, lead: TBD, scopes: [demolition]}]
+  max_concurrent_projects: TBD
+  preferred_project_size_usd: {min: TBD, max: TBD}
+  equipment: []                            # e.g. [{type: mini excavator, model: TBD, owned: true}]
+  key_subcontractors: []                   # e.g. [{trade: trucking, name: TBD}]
+  disposal_and_recycling_facilities: []    # used for CalGreen diversion paperwork
+
+bidding_qualifications:
+  public_works_experience: TBD             # list of past public projects [{agency, scope, value, year}]
+  references: []                           # [{name, company, phone, project}] — permission required before use
+  prevailing_wage_payroll_capable: TBD     # certified payroll (eCPR) capability
+  can_meet_sbe_dbe_goals_via: []           # subs/suppliers we use for participation goals
+  bid_no_bid_rules:
+    min_margin_percent: TBD
+    max_distance_miles: 100
+    require_site_walk_if_optional: true
+    skip_if_mandatory_prebid_missed: true
+
+bid_sources:
+  # Priority order for the Public Bid Hunter. `access` describes how we get in.
+  - name: SAM.gov
+    url: https://sam.gov
+    type: federal
+    priority: 1
+    access: TBD
+  - name: Cal eProcure
+    url: https://caleprocure.ca.gov
+    type: state
+    priority: 1
+    access: TBD
+  - name: Caltrans construction contract advertisements
+    url: TBD                               # confirm the current Caltrans bid-advertisement page
+    type: state_transportation
+    priority: 1
+    access: TBD
+  - name: Bay Area cities and counties (own portals)
+    type: local
+    priority: 1
+    agencies: []                           # fill with the specific cities/counties we watch
+  - name: School districts (K-12 and community colleges)
+    type: education
+    priority: 2
+    agencies: []
+  - name: PlanetBids
+    url: https://www.planetbids.com
+    type: aggregator_portal
+    priority: 2
+    agencies: []
+  - name: BidSync (Periscope S2G) and similar portals (OpenGov Procurement, BidNet Direct, Bonfire)
+    type: aggregator_portal
+    priority: 2
+  - name: Utilities and infrastructure (e.g. PG&E supplier programs, EBMUD, regional water/sewer districts, BART, transit agencies, ports)
+    type: utility_infrastructure
+    priority: 2
+    agencies: []
+  - name: Prime contractor subcontracting (GC/prime bid invites, plan rooms, SBE/DBE outreach lists)
+    type: subcontracting
+    priority: 1
+    primes: []
+
+systems:
+  crm: HubSpot                             # VERIFY
+  prospecting: Apollo                      # VERIFY
+  email: Gmail
+  calendar: Google Calendar
+  documents: Google Drive
+  e_signature: PandaDoc                    # VERIFY
+  accounting: QuickBooks Online            # VERIFY
+  scheduling_links: Calendly               # VERIFY
+
+outreach_policy:
+  max_cold_emails_per_day: 6
+  verified_emails_only: true
+  one_primary_contact_per_company_first: true
+  daily_briefing:
+    to: info@bestconstruction.pro
+    subject_format: "Daily Leads — {date}"
+
+safety:
+  iipp_owner: TBD                          # person responsible for the IIPP
+  iipp_last_reviewed: TBD
+  competent_persons: []                    # [{name, competencies: [excavation, scaffolds], trained_on}]
+  emr: TBD                                 # experience modification rate (bids often ask)
+  training_records_location: TBD
+  cal_osha_excavation_permit: TBD          # annual permit status if applicable
+
+finance:
+  labor_burden_rates: TBD                  # $/hr by role incl. payroll taxes, WC, benefits
+  equipment_internal_rates: TBD            # $/day by unit
+  overhead_rate_percent: TBD
+  default_retention_percent: TBD
+  billing_day_of_month: TBD
+  quickbooks_job_tracking: TBD             # projects | classes | customers:jobs
+
+approvals:
+  # Who can approve gated actions (see strategy/best-construction/operating-rules.md).
+  approvers:
+    - name: Rafa
+      email: info@bestconstruction.pro
+  # Approval cannot be delegated to an agent. Changing this list is itself a gated change.
